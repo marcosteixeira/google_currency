@@ -16,8 +16,8 @@ class Money
     class GoogleCurrency < Money::Bank::VariableExchange
 
 
-      SERVICE_HOST = "finance.google.com"
-      SERVICE_PATH = "/bctzjpnsun/converter"
+      SERVICE_HOST = "free.currencyconverterapi.com"
+      SERVICE_PATH = "/api/v5/convert"
 
 
       # @return [Hash] Stores the currently known rates.
@@ -149,10 +149,10 @@ class Money
       #
       # @return [URI::HTTP]
       def build_uri(from, to)
-        uri = URI::HTTP.build(
+        uri = URI::HTTPS.build(
           :host  => SERVICE_HOST,
           :path  => SERVICE_PATH,
-          :query => "a=1&from=#{from.iso_code}&to=#{to.iso_code}"
+          :query => "q=#{from.iso_code}_#{to.iso_code}&compact=y"
         )
       end
 
@@ -163,16 +163,10 @@ class Money
       #
       # @return [BigDecimal]
       def extract_rate(data)
-        case data
-        when /<span class=bld>(\d+\.?\d*) [A-Z]{3}<\/span>/
-          BigDecimal($1)
-        when /Could not convert\./
-          raise UnknownRate
-        when /captcha-form/
-          raise GoogleCurrencyCaptchaError
-        else
-          raise GoogleCurrencyFetchError
-        end
+        json_data = JSON.parse(data)
+        raise GoogleCurrencyFetchError unless json_data.present?
+
+        return json_data.values[0]['val']
       end
     end
   end
