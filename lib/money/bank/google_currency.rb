@@ -17,7 +17,7 @@ class Money
 
 
       SERVICE_HOST = "free.currencyconverterapi.com"
-      SERVICE_PATH = "/api/v5/convert"
+      SERVICE_PATH = "/api/v6/convert"
 
 
       # @return [Hash] Stores the currently known rates.
@@ -152,7 +152,7 @@ class Money
         uri = URI::HTTPS.build(
           :host  => SERVICE_HOST,
           :path  => SERVICE_PATH,
-          :query => "q=#{from.iso_code}_#{to.iso_code}&compact=y"
+          :query => "q=#{from.iso_code}_#{to.iso_code}&compact=y&apiKey=#{ENV['CURRENCY_CONVERTER_API_KEY']}"
         )
       end
 
