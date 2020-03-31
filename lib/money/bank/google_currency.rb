@@ -16,8 +16,8 @@ class Money
     class GoogleCurrency < Money::Bank::VariableExchange
 
 
-      SERVICE_HOST = "free.currencyconverterapi.com"
-      SERVICE_PATH = "/api/v6/convert"
+      SERVICE_HOST = "api.currconv.com"
+      SERVICE_PATH = "/api/v7/convert"
 
 
       # @return [Hash] Stores the currently known rates.
